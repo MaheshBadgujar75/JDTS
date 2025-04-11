@@ -1,0 +1,16 @@
+# Ignore Visual Studio folder
+.vs/
+
+# Ignore Node.js dependencies (if any)
+node_modules/
+
+# Ignore build outputs
+dist/
+build/
+
+# Ignore environment files
+.env
+
+# Ignore system files
+.DS_Store
+Thumbs.db
