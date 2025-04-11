@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { Headphones, Package, SmileIcon, FileText, Users } from 'lucide-react';
@@ -583,164 +583,847 @@ const HeroCarousel = ({ images = [] }) => {
             </div>
 
             {/* Services Section */}
-            <HomeServicesSection />
+            <CustomerServiceSection />
         </>
     );
 };
 
 // Services Section Component
-function HomeServicesSection() {
-    const [animate, setAnimate] = useState(false);
+
+const CustomerServiceSection = () => {
+    // Refs for animation elements
+    const scrollAnimationRefs = useRef([]);
+    const counterRefs = useRef([]);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
-        // Trigger animations after component mounts
-        setAnimate(true);
+        // Mark component as loaded for initial animations
+        setIsLoaded(true);
 
-        // Setup intersection observer for scroll-based animation
+        // Intersection Observer for scroll animations
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    setAnimate(true);
+                    entry.target.classList.add('active');
                 }
             });
         }, { threshold: 0.2 });
 
-        const section = document.getElementById('services-section');
-        if (section) observer.observe(section);
+        // Observe all elements with scroll-animation class
+        scrollAnimationRefs.current.forEach(el => {
+            if (el) observer.observe(el);
+        });
 
+        // Counter animation function
+        const startCounterAnimation = (counter, target) => {
+            const duration = 2000; // ms
+            const step = target / (duration / 16);
+            let current = 0;
+
+            const updateCounter = () => {
+                current += step;
+                if (current < target) {
+                    if (counter) counter.textContent = Math.ceil(current);
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    if (counter) counter.textContent = target;
+                }
+            };
+
+            updateCounter();
+        };
+
+        // Counter observer
+        const counterObserver = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                const counter = entries[0].target;
+                const target = parseInt(counter.getAttribute('data-target'));
+                startCounterAnimation(counter, target);
+                counterObserver.unobserve(counter);
+            }
+        }, { threshold: 0.5 });
+
+        // Observe counter elements
+        counterRefs.current.forEach(el => {
+            if (el) counterObserver.observe(el);
+        });
+
+        // Cleanup
         return () => {
-            if (section) observer.unobserve(section);
+            observer.disconnect();
+            counterObserver.disconnect();
         };
     }, []);
 
+    // Add elements to refs
+    const addToScrollAnimationRefs = (el) => {
+        if (el && !scrollAnimationRefs.current.includes(el)) {
+            scrollAnimationRefs.current.push(el);
+        }
+    };
+
+    const addToCounterRefs = (el) => {
+        if (el && !counterRefs.current.includes(el)) {
+            counterRefs.current.push(el);
+        }
+    };
+
     return (
-        <section id="services-section" className="py-16 bg-gradient-to-r from-red-50 to-white">
-            <div className="container mx-auto px-4">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-                    {/* Left side image */}
-                    <div className={`w-full md:w-1/2 transition-all duration-1000 ${animate ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'}`}>
-                        <div className="bg-red-500 rounded-lg p-6 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-red-400 rounded-full -mr-16 -mt-16 opacity-30"></div>
-                            <div className="absolute bottom-0 left-0 w-24 h-24 bg-red-600 rounded-full -ml-12 -mb-12 opacity-20"></div>
+        <div className={`container ${isLoaded ? 'loaded' : ''}`}>
+            <style jsx>{` 
+        .container {
+          width: 100%;
+          margin: 0 auto;
+          padding: 50px 20px;
+          background-color: #fff;
+          position: relative;
+          overflow: hidden;
+        }
 
-                            <div className="relative z-10">
-                                <div className="flex items-center mb-6">
-                                    <div className="text-white text-2xl font-bold bg-red-600 rounded-full p-3">24/7</div>
-                                    <div className="w-16 h-1 bg-white mx-3"></div>
-                                    <div className="text-white">
-                                        <div className="w-12 h-3 bg-white mb-2 rounded-md"></div>
-                                        <div className="w-16 h-3 bg-white rounded-md"></div>
-                                    </div>
-                                </div>
+        .container::before {
+          content: "";
+          position: absolute;
+          width: 600px;
+          height: 600px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(255,0,0,0.05) 0%, rgba(255,255,255,0) 70%);
+          top: -200px;
+          right: -200px;
+          z-index: 0;
+        }
 
-                                <div className="flex justify-between items-center">
-                                    <div className="text-white">
-                                        <div className="bg-white rounded-full p-2 w-12 h-12 mb-3 flex items-center justify-center">
-                                            <div className="w-8 h-8 bg-red-500 rounded-full"></div>
-                                        </div>
-                                        <div className="w-10 h-3 bg-white rounded-md"></div>
-                                        <div className="w-8 h-3 bg-white rounded-md mt-2"></div>
-                                        <div className="w-12 h-3 bg-white rounded-md mt-2"></div>
-                                    </div>
+        .container::after {
+          content: "";
+          position: absolute;
+          width: 500px;
+          height: 500px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(255,0,0,0.05) 0%, rgba(255,255,255,0) 70%);
+          bottom: -200px;
+          left: -200px;
+          z-index: 0;
+        }
+        
+        .services-section {
+          display: flex;
+          flex-direction: column;
+          gap: 100px;
+          position: relative;
+          z-index: 1;
+        }
+        
+        .hero {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 50px;
+          position: relative;
+        }
+        
+        .hero-content {
+          flex: 1;
+          position: relative;
+        }
 
-                                    <div className="bg-white rounded-2xl p-4 w-48 h-48 flex items-center justify-center relative overflow-hidden">
-                                        <div className="absolute w-full h-12 bg-red-100 top-0 left-0"></div>
-                                        <div className="absolute w-full h-1 bg-red-200 top-12 left-0"></div>
-                                        <div className="absolute w-8 h-8 rounded-full bg-red-400 bottom-6 right-6"></div>
-                                        <div className="w-24 h-24 bg-red-200 rounded-full relative">
-                                            <div className="w-20 h-20 bg-red-300 rounded-full absolute top-2 left-2"></div>
-                                            <div className="w-16 h-6 bg-red-400 rounded-md absolute top-8 left-4"></div>
-                                            <div className="w-3 h-2 bg-white rounded-full absolute top-10 left-6"></div>
-                                            <div className="w-3 h-2 bg-white rounded-full absolute top-10 left-12"></div>
-                                        </div>
-                                    </div>
+        .hero-content::before {
+          content: "";
+          position: absolute;
+          width: 80px;
+          height: 80px;
+          border: 6px solid rgba(255, 0, 0, 0.1);
+          border-radius: 12px;
+          top: -40px;
+          left: -40px;
+          z-index: -1;
+          animation: rotateSquare 20s linear infinite;
+        }
+        
+        .hero-image {
+          flex: 1;
+          position: relative;
+          background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+          border-radius: 20px;
+          padding: 40px;
+          box-shadow: 
+            0 20px 40px rgba(255, 0, 0, 0.2),
+            0 0 0 2px rgba(255, 255, 255, 0.8) inset;
+          overflow: hidden;
+          transform: perspective(1000px) rotateY(-5deg);
+          transition: all 0.5s ease;
+        }
 
-                                    <div className="text-white">
-                                        <div className="w-8 h-8 rounded-full bg-red-600 mb-2"></div>
-                                        <div className="w-8 h-2 bg-white rounded-md"></div>
-                                        <div className="w-10 h-2 bg-white rounded-md mt-2"></div>
-                                        <div className="w-6 h-2 bg-white rounded-md mt-2"></div>
-                                    </div>
-                                </div>
-                            </div>
+        .hero-image:hover {
+          transform: perspective(1000px) rotateY(0deg);
+          box-shadow: 
+            0 30px 60px rgba(255, 0, 0, 0.3),
+            0 0 0 4px rgba(255, 255, 255, 0.9) inset;
+        }
+        
+        .hero-image img {
+          width: 100%;
+          height: auto;
+          position: relative;
+          z-index: 2;
+          filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
+          transform: translateY(0);
+          transition: all 0.5s ease;
+          border-radius: 20px;
+        }
+
+        .hero-image:hover img {
+          transform: translateY(-10px);
+        }
+        
+        .circle {
+          position: absolute;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.25);
+          z-index: 1;
+          backdrop-filter: blur(4px);
+        }
+        
+        .circle-1 {
+          width: 120px;
+          height: 120px;
+          top: -30px;
+          left: 20%;
+          animation: float 8s ease-in-out infinite;
+        }
+        
+        .circle-2 {
+          width: 80px;
+          height: 80px;
+          bottom: 40px;
+          right: 15%;
+          animation: float 6s ease-in-out infinite 1s;
+        }
+        
+        .circle-3 {
+          width: 60px;
+          height: 60px;
+          top: 50%;
+          left: 10%;
+          animation: float 7s ease-in-out infinite 0.5s;
+        }
+        
+        .blob {
+          position: absolute;
+          z-index: 0;
+          opacity: 0.2;
+          filter: blur(50px);
+          background: #ff0000;
+        }
+        
+        .blob-1 {
+          width: 400px;
+          height: 400px;
+          top: -200px;
+          left: -200px;
+          border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+          animation: morph 15s linear infinite;
+          background: linear-gradient(45deg, #ff0000, #ff3333);
+        }
+        
+        .blob-2 {
+          width: 350px;
+          height: 350px;
+          bottom: -150px;
+          right: -100px;
+          border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+          animation: morph 12s linear infinite reverse;
+          background: linear-gradient(45deg, #cc0000, #ff0000);
+        }
+        
+        h1 {
+          font-size: 56px;
+          font-weight: 800;
+          color: #e60000;
+          margin-bottom: 25px;
+          position: relative;
+          display: inline-block;
+          text-shadow: 2px 2px 0 rgba(255,0,0,0.1);
+        }
+        
+        h1::after {
+          content: "";
+          position: absolute;
+          width: 70%;
+          height: 8px;
+          background: linear-gradient(90deg, #ff0000, transparent);
+          bottom: -10px;
+          left: 0;
+          border-radius: 4px;
+        }
+        
+        p {
+          font-size: 18px;
+          line-height: 1.8;
+          color: #444;
+          margin-bottom: 30px;
+          position: relative;
+        }
+
+        p::before {
+          content: "";
+          position: absolute;
+          width: 3px;
+          height: 100%;
+          background: linear-gradient(to bottom, #ff0000, transparent);
+          left: -20px;
+          border-radius: 3px;
+        }
+        
+        .features {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 40px;
+          margin-top: 60px;
+          position: relative;
+        }
+
+        .features::before {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(255,0,0,0.3), transparent);
+          top: -30px;
+        }
+
+        .features::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(255,0,0,0.3), transparent);
+          bottom: -30px;
+        }
+        
+        .feature-card {
+          background: white;
+          border-radius: 20px;
+          padding: 40px 30px;
+          box-shadow: 
+            0 15px 35px rgba(0, 0, 0, 0.05),
+            0 5px 15px rgba(0, 0, 0, 0.05);
+          transition: all 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
+          position: relative;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          border: 1px solid rgba(255, 0, 0, 0.1);
+          z-index: 1;
+        }
+        
+        .feature-card:hover {
+          transform: translateY(-16px);
+          box-shadow: 
+            0 30px 60px rgba(255, 0, 0, 0.15),
+            0 0 15px rgba(255, 0, 0, 0.1);
+          border-color: rgba(255, 0, 0, 0.5);
+        }
+        
+        .feature-card::before {
+          content: "";
+          position: absolute;
+          top: -100%;
+          left: -100%;
+          width: 150%;
+          height: 150%;
+          background: linear-gradient(135deg, rgba(255, 0, 0, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+          transition: all 0.8s ease;
+          transform: rotate(45deg);
+          z-index: -1;
+        }
+        
+        .feature-card:hover::before {
+          top: 100%;
+          left: 100%;
+        }
+
+        .feature-card::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 20px;
+          bottom: 0;
+          left: 0;
+          background: linear-gradient(to top, rgba(255,0,0,0.05), transparent);
+          transition: all 0.5s ease;
+          opacity: 0;
+        }
+
+        .feature-card:hover::after {
+          height: 100%;
+          opacity: 1;
+        }
+        
+        .icon {
+          width: 90px;
+          height: 90px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+          color: white;
+          border-radius: 50%;
+          margin-bottom: 25px;
+          font-size: 32px;
+          position: relative;
+          transition: all 0.5s ease;
+          border: 4px solid rgba(255,255,255,0.8);
+          box-shadow: 0 10px 20px rgba(255,0,0,0.2);
+        }
+        
+        .feature-card:hover .icon {
+          transform: scale(1.1) translateY(-10px);
+          box-shadow: 0 15px 30px rgba(255,0,0,0.3);
+        }
+        
+        .icon svg {
+          width: 40px;
+          height: 40px;
+          filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+          transition: all 0.5s ease;
+        }
+
+        .feature-card:hover .icon svg {
+          transform: scale(1.1);
+        }
+        
+        .icon::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+          opacity: 0.4;
+          z-index: -1;
+          animation: pulse 2s infinite;
+        }
+        
+        .feature-title {
+          font-size: 24px;
+          font-weight: 700;
+          color: #e60000;
+          margin-bottom: 20px;
+          position: relative;
+          transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-title {
+          transform: translateY(-5px);
+          text-shadow: 0 2px 5px rgba(255,0,0,0.1);
+        }
+
+        .feature-title::after {
+          content: "";
+          position: absolute;
+          width: 40px;
+          height: 3px;
+          background: linear-gradient(90deg, #ff0000, transparent);
+          bottom: -10px;
+          left: 50%;
+          transform: translateX(-50%);
+          border-radius: 2px;
+          transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-title::after {
+          width: 60px;
+        }
+        
+        .feature-desc {
+          font-size: 16px;
+          color: #555;
+          line-height: 1.7;
+          transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-desc {
+          color: #333;
+        }
+        
+        .stats {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 30px;
+          margin-top: 80px;
+          position: relative;
+          background: linear-gradient(135deg, rgba(255,0,0,0.03) 0%, rgba(255,255,255,0) 100%);
+          border-radius: 20px;
+          padding: 40px 20px;
+          border: 1px solid rgba(255,0,0,0.1);
+        }
+
+        .stats::before {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          left: 0;
+          border-radius: 20px;
+          background: radial-gradient(circle at center, rgba(255,0,0,0.03) 0%, rgba(255,255,255,0) 70%);
+        }
+        
+        .stat-card {
+          text-align: center;
+          padding: 30px;
+          position: relative;
+          transition: all 0.5s ease;
+          border-radius: 15px;
+          backdrop-filter: blur(3px);
+        }
+
+        .stat-card:hover {
+          background: rgba(255,255,255,0.7);
+          box-shadow: 0 10px 30px rgba(255,0,0,0.1);
+          transform: translateY(-10px);
+        }
+        
+        .stat-icon {
+          color: #e60000;
+          font-size: 32px;
+          margin-bottom: 20px;
+          position: relative;
+          display: inline-block;
+        }
+
+        .stat-icon::after {
+          content: "";
+          position: absolute;
+          width: 40px;
+          height: 40px;
+          background: rgba(255,0,0,0.1);
+          border-radius: 50%;
+          z-index: -1;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          animation: pulse 3s infinite;
+        }
+        
+        .stat-number {
+          font-size: 56px;
+          font-weight: 800;
+          color: #e60000;
+          margin-bottom: 15px;
+          transition: all 0.5s ease;
+          text-shadow: 2px 2px 0 rgba(255,0,0,0.1);
+          position: relative;
+          background: linear-gradient(to right, #cc0000, #ff0000);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-card:hover .stat-number {
+          transform: translateY(-8px) scale(1.05);
+        }
+        
+        .stat-label {
+          font-size: 18px;
+          color: #555;
+          font-weight: 600;
+          position: relative;
+          padding-bottom: 10px;
+          transition: all 0.3s ease;
+        }
+
+        .stat-card:hover .stat-label {
+          color: #333;
+        }
+
+        .stat-label::after {
+          content: "";
+          position: absolute;
+          width: 30px;
+          height: 2px;
+          background: linear-gradient(90deg, #ff0000, transparent);
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          transition: all 0.3s ease;
+        }
+
+        .stat-card:hover .stat-label::after {
+          width: 50px;
+        }
+        
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-20px);
+          }
+        }
+        
+        @keyframes morph {
+          0%, 100% {
+            border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+          }
+          25% {
+            border-radius: 50% 50% 30% 70% / 30% 30% 70% 70%;
+          }
+          50% {
+            border-radius: 30% 70% 70% 30% / 30% 50% 50% 70%;
+          }
+          75% {
+            border-radius: 66% 34% 50% 50% / 50% 30% 70% 30%;
+          }
+        }
+        
+        @keyframes pulse {
+          0% {
+            transform: scale(1);
+            opacity: 0.4;
+          }
+          50% {
+            transform: scale(1.5);
+            opacity: 0;
+          }
+          100% {
+            transform: scale(1);
+            opacity: 0;
+          }
+        }
+
+        @keyframes rotateSquare {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+        
+        .scroll-animation {
+          opacity: 0;
+          transform: translateY(50px);
+          transition: all 1s cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+        
+        .scroll-animation.active {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        
+        .counter {
+          display: inline-block;
+        }
+
+        /* Initial load animation */
+        .container {
+          opacity: 0;
+          transform: translateY(20px);
+          transition: all 0.8s ease;
+        }
+
+        .container.loaded {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        /* Red "accent" lines */
+        .accent-line {
+          position: absolute;
+          background: linear-gradient(90deg, transparent, #ff0000, transparent);
+          height: 2px;
+          width: 20%;
+          opacity: 0.2;
+          z-index: 0;
+        }
+
+        .accent-line-1 {
+          top: 10%;
+          left: -10%;
+          width: 30%;
+          transform: rotate(-25deg);
+        }
+
+        .accent-line-2 {
+          bottom: 20%;
+          right: -5%;
+          width: 25%;
+          transform: rotate(15deg);
+        }
+
+        .accent-line-3 {
+          top: 50%;
+          left: 15%;
+          width: 15%;
+          transform: rotate(45deg);
+        }
+
+        /* Ribbon corner effect for hero */
+        .ribbon {
+          position: absolute;
+          top: -10px;
+          right: -10px;
+          width: 120px;
+          height: 120px;
+          overflow: hidden;
+          z-index: 3;
+        }
+
+        .ribbon::before,
+        .ribbon::after {
+          position: absolute;
+          content: '';
+          display: block;
+          width: 20px;
+          height: 20px;
+          background: #990000;
+          z-index: -1;
+        }
+
+        .ribbon::before {
+          top: 0;
+          right: 0;
+        }
+
+        .ribbon::after {
+          bottom: 0;
+          left: 0;
+        }
+
+        .ribbon-content {
+          position: absolute;
+          width: 150px;
+          height: 40px;
+          background: #e60000;
+          top: 30px;
+          right: -35px;
+          z-index: 4;
+          transform: rotate(45deg);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-weight: bold;
+          font-size: 14px;
+          box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+      `}</style>
+
+            {/* Red accent lines for visual interest */}
+            <div className="accent-line accent-line-1"></div>
+            <div className="accent-line accent-line-2"></div>
+            <div className="accent-line accent-line-3"></div>
+
+            <div className="services-section">
+                {/* Hero Section */}
+                <div className="hero scroll-animation" ref={addToScrollAnimationRefs}>
+                    <div className="hero-content">
+                        <h1>Best Services</h1>
+                        <p>We believe serving better is the great way to survive in market and having good relationship with client. Our dedicated team ensures you receive exceptional solutions tailored to your business needs.</p>
+                    </div>
+                    <div className="hero-image">
+                        <div className="ribbon">
+                            <div className="ribbon-content">Premium</div>
                         </div>
+                        <img src="/ServiceImage.jpg" alt="Customer service illustration" />
+                        <div className="circle circle-1"></div>
+                        <div className="circle circle-2"></div>
+                        <div className="circle circle-3"></div>
+                    </div>
+                    <div className="blob blob-1"></div>
+                    <div className="blob blob-2"></div>
+                </div>
+
+                {/* Features */}
+                <div className="features">
+                    <div className="feature-card scroll-animation" ref={addToScrollAnimationRefs} style={{ transitionDelay: '0.2s' }}>
+                        <div className="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                        </div>
+                        <h3 className="feature-title">24/7 Helpline</h3>
+                        <p className="feature-desc">We are always there to help you anytime 24/7. Our team is ready to assist with any inquiries or issues that arise.</p>
                     </div>
 
-                    {/* Right side content */}
-                    <div className={`w-full md:w-1/2 transition-all duration-1000 delay-300 ${animate ? 'translate-x-0 opacity-100' : 'translate-x-20 opacity-0'}`}>
-                        <h2 className="text-4xl font-bold text-red-600 mb-4">Best Services</h2>
-                        <p className="text-gray-700 mb-8">
-                            We believe serving better is the great way to survive in market and having good
-                            relationship with client.
-                        </p>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {/* Service 1 */}
-                            <div className={`bg-white p-6 rounded-lg shadow-md border-l-4 border-red-500 transition-all duration-500 delay-400 ${animate ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-                                <div className="text-red-500 mb-3">
-                                    <Headphones size={36} />
-                                </div>
-                                <h3 className="text-xl font-semibold text-gray-800 mb-2">24/7 Helpline</h3>
-                                <p className="text-gray-600">
-                                    We are always there to help you anytime 24/7
-                                </p>
-                            </div>
-
-                            {/* Service 2 */}
-                            <div className={`bg-white p-6 rounded-lg shadow-md border-l-4 border-red-500 transition-all duration-500 delay-500 ${animate ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-                                <div className="text-red-500 mb-3">
-                                    <Package size={36} />
-                                </div>
-                                <h3 className="text-xl font-semibold text-gray-800 mb-2">Complete package</h3>
-                                <p className="text-gray-600">
-                                    We are complete package of whatever you need. Software, Website, Barcoding related products.
-                                </p>
-                            </div>
+                    <div className="feature-card scroll-animation" ref={addToScrollAnimationRefs} style={{ transitionDelay: '0.4s' }}>
+                        <div className="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
                         </div>
+                        <h3 className="feature-title">Complete Package</h3>
+                        <p className="feature-desc">We are complete package of whatever you need. Software, Website, Barcoding related products and more solutions.</p>
+                    </div>
+
+                    <div className="feature-card scroll-animation" ref={addToScrollAnimationRefs} style={{ transitionDelay: '0.6s' }}>
+                        <div className="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                        </div>
+                        <h3 className="feature-title">Quality Assurance</h3>
+                        <p className="feature-desc">Our dedicated team ensures all deliverables meet the highest standards of quality and performance.</p>
                     </div>
                 </div>
 
-                {/* Stats Section */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16">
-                    {/* Stat 1 */}
-                    <div className={`flex flex-col items-center transition-all duration-500 delay-600 ${animate ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-                        <div className="flex items-center text-red-500 mb-2">
-                            <SmileIcon size={28} />
-                            <span className="text-3xl font-bold ml-2">232</span>
+                {/* Stats */}
+                <div className="stats scroll-animation" ref={addToScrollAnimationRefs} style={{ transitionDelay: '0.8s' }}>
+                    <div className="stat-card">
+                        <div className="stat-icon">😊</div>
+                        <div
+                            className="stat-number counter"
+                            data-target="232"
+                            ref={addToCounterRefs}
+                        >
+                            0
                         </div>
-                        <p className="text-gray-700 font-medium text-center">Happy Clients</p>
+                        <div className="stat-label">Happy Clients</div>
                     </div>
 
-                    {/* Stat 2 */}
-                    <div className={`flex flex-col items-center transition-all duration-500 delay-700 ${animate ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-                        <div className="flex items-center text-red-500 mb-2">
-                            <FileText size={28} />
-                            <span className="text-3xl font-bold ml-2">521</span>
+                    <div className="stat-card">
+                        <div className="stat-icon">📋</div>
+                        <div
+                            className="stat-number counter"
+                            data-target="521"
+                            ref={addToCounterRefs}
+                        >
+                            0
                         </div>
-                        <p className="text-gray-700 font-medium text-center">Projects</p>
+                        <div className="stat-label">Projects</div>
                     </div>
 
-                    {/* Stat 3 */}
-                    <div className={`flex flex-col items-center transition-all duration-500 delay-800 ${animate ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-                        <div className="flex items-center text-red-500 mb-2">
-                            <Headphones size={28} />
-                            <span className="text-3xl font-bold ml-2">999</span>
+                    <div className="stat-card">
+                        <div className="stat-icon">🎧</div>
+                        <div
+                            className="stat-number counter"
+                            data-target="999"
+                            ref={addToCounterRefs}
+                        >
+                            0
                         </div>
-                        <p className="text-gray-700 font-medium text-center">Support</p>
+                        <div className="stat-label">Support</div>
                     </div>
 
-                    {/* Stat 4 */}
-                    <div className={`flex flex-col items-center transition-all duration-500 delay-900 ${animate ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-                        <div className="flex items-center text-red-500 mb-2">
-                            <Users size={28} />
-                            <span className="text-3xl font-bold ml-2">15</span>
+                    <div className="stat-card">
+                        <div className="stat-icon">👥</div>
+                        <div
+                            className="stat-number counter"
+                            data-target="15"
+                            ref={addToCounterRefs}
+                        >
+                            0
                         </div>
-                        <p className="text-gray-700 font-medium text-center">Hard Workers</p>
+                        <div className="stat-label">Hard Workers</div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
     );
-}
+};
+
 
 export default HeroCarousel;

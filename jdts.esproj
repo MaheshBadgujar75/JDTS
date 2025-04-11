@@ -15,7 +15,6 @@
     <TypeScriptConfiguration Remove="src\NewFolder3\**" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove=".gitignore" />
     <None Remove="src\ReactComponent.jsx" />
   </ItemGroup>
 </Project>
