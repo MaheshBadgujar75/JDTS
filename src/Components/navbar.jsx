@@ -1,4 +1,5 @@
 ﻿import React, { useState } from 'react';
+import { Link } from 'react-router-dom'; // <-- Import Link
 import "../Css/navbar.css";
 import { FaYoutube, FaDownload } from 'react-icons/fa';
 import { IoBook } from 'react-icons/io5';
@@ -6,7 +7,8 @@ import { IoBook } from 'react-icons/io5';
 const JDTechHeader = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-    const toggleDropdown = () => {
+    const toggleDropdown = (e) => {
+        e.preventDefault(); // <-- Prevent default anchor behavior
         setIsDropdownOpen(!isDropdownOpen);
     };
 
@@ -15,14 +17,16 @@ const JDTechHeader = () => {
             <div className="header-container">
                 {/* Logo area */}
                 <div className="logo-wrapper">
-                    <img src="/Assets/JDTechLogo.ico" alt="JD Tech Solution Logo" className="logo-image" />
+                    <Link to="/">
+                        <img src="/Assets/JDTechLogo.ico" alt="JD Tech Solution Logo" className="logo-image" />
+                    </Link>
                 </div>
 
                 {/* Navigation bar */}
                 <nav className="main-nav">
                     <ul className="nav-items">
-                        <li className="nav-item"><a href="#" className="nav-link">HOME</a></li>
-                        <li className="nav-item"><a href="#" className="nav-link">ABOUT US</a></li>
+                        <li className="nav-item"><Link to="/" className="nav-link">HOME</Link></li>
+                        <li className="nav-item"><Link to="/about-us" className="nav-link">ABOUT US</Link></li>
                         <li className="nav-item dropdown">
                             <a
                                 href="#"
@@ -33,31 +37,31 @@ const JDTechHeader = () => {
                             </a>
                             {isDropdownOpen && (
                                 <ul className="dropdown-menu">
-                                    <li><a href="#">Service 1</a></li>
-                                    <li><a href="#">Service 2</a></li>
-                                    <li><a href="#">Service 3</a></li>
+                                    <li><Link to="/hardware">Hardware</Link></li>
+                                    <li><Link to="/software">Software</Link></li>
+                                    <li><Link to="/digital-marketing">Digital Marketing</Link></li>
                                 </ul>
                             )}
                         </li>
-                        <li className="nav-item"><a href="#" className="nav-link">OFFER</a></li>
-                        <li className="nav-item"><a href="#" className="nav-link">CUSTOMER REVIEWS</a></li>
-                        <li className="nav-item"><a href="#" className="nav-link">CONTACT US</a></li>
+                        <li className="nav-item"><Link to="/offer" className="nav-link">OFFER</Link></li>
+                        <li className="nav-item"><Link to="/reviews" className="nav-link">CUSTOMER REVIEWS</Link></li>
+                        <li className="nav-item"><Link to="/contact-us" className="nav-link">CONTACT US</Link></li>
                     </ul>
 
                     {/* Action icons */}
                     <div className="nav-actions">
-                        <a href="#" className="action-icon youtube">
+                        <Link to="/youtube" className="action-icon youtube">
                             <FaYoutube />
                             <span className="action-tooltip">Watch Videos</span>
-                        </a>
-                        <a href="#" className="action-icon catalog">
+                        </Link>
+                        <Link to="/catalog" className="action-icon catalog">
                             <IoBook />
                             <span className="action-tooltip">View Catalog</span>
-                        </a>
-                        <a href="#" className="action-icon download">
+                        </Link>
+                        <Link to="/download" className="action-icon download">
                             <FaDownload />
                             <span className="action-tooltip">Download Resources</span>
-                        </a>
+                        </Link>
                     </div>
                 </nav>
             </div>

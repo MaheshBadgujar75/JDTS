@@ -1,0 +1,103 @@
+/* Footer */
+.footer {
+    padding: 60px 0 20px;
+    background: linear-gradient(135deg, var(--light-gray) 0%, var(--off-white) 100%);
+    margin-top: 40px;
+    width: 100%;
+    position: relative;
+    box-shadow: 0 -10px 30px var(--shadow-light);
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 30px;
+    padding: 0 20px;
+}
+
+.footer-column {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    margin-bottom: 10px;
+}
+
+.logo-icon img {
+    width: 90px;
+    height: 90px;
+}
+
+
+.footer-title {
+    margin-bottom: 20px;
+    font-size: 18px;
+    position: relative;
+    display: inline-block;
+    color: var(--primary-red);
+    font-weight: 600;
+}
+
+    .footer-title:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -8px;
+        width: 30px;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary-red) 0%, var(--primary-red-light) 100%);
+    }
+
+.footer-link {
+    color: var(--text-medium);
+    text-decoration: none;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    position: relative;
+    padding-left: 5px;
+}
+
+    .footer-link:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 2px;
+        background-color: var(--primary-red);
+        transition: all 0.3s ease;
+    }
+
+    .footer-link svg {
+        margin-right: 8px;
+        flex-shrink: 0;
+        color: var(--primary-red);
+    }
+
+    .footer-link:hover {
+        color: var(--primary-red);
+        transform: translateX(8px);
+    }
+
+        .footer-link:hover:before {
+            width: 3px;
+        }
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(230,0,0,0.1);
+    color: var(--text-light);
+    font-size: 14px;
+    height: 10px;
+}

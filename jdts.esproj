@@ -15,6 +15,9 @@
     <TypeScriptConfiguration Remove="src\NewFolder3\**" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="src\Components\AboutUsSection.jsx" />
+    <None Remove="src\Components\SoftwareProductSection.jsx" />
+    <None Remove="src\Css\AboutUsSection.css" />
     <None Remove="src\ReactComponent.jsx" />
   </ItemGroup>
 </Project>
