@@ -45,7 +45,7 @@ const JDTechHeader = () => {
                         </li>
                         <li className="nav-item"><Link to="/offer" className="nav-link">OFFER</Link></li>
                         <li className="nav-item"><Link to="/reviews" className="nav-link">CUSTOMER REVIEWS</Link></li>
-                        <li className="nav-item"><Link to="/contact-us" className="nav-link">CONTACT US</Link></li>
+                        <li className="nav-item"><Link to="/ContactUs" className="nav-link">CONTACT US</Link></li>
                     </ul>
 
                     {/* Action icons */}

@@ -1,1 +1,2 @@
 P:\JDTS\JDTS\obj\Debug\jdts.esproj.CoreCompileInputs.cache
+P:\micro project\JDTS\obj\Debug\jdts.esproj.CoreCompileInputs.cache

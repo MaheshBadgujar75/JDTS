@@ -1,54 +1,8 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
 import { ChevronRight, Phone, Target, Award, Users, Code, Monitor, BarChart, Shield, Database } from 'lucide-react';
 
 function AboutUsPage() {
-    const [animate, setAnimate] = useState(false);
-    const [activeService, setActiveService] = useState(null);
-    const [scrolledSections, setScrolledSections] = useState({});
-
-    // Improved optimization with debounced scroll handler
-    useEffect(() => {
-        setAnimate(true);
-
-        // Debounce function to limit how often scroll events fire
-        function debounce(func, wait) {
-            let timeout;
-            return function () {
-                const context = this;
-                const args = arguments;
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(context, args), wait);
-            };
-        }
-
-        // More efficient scroll handler
-        const handleScroll = debounce(() => {
-            const sections = document.querySelectorAll('.scroll-animate');
-            const updated = { ...scrolledSections };
-            let changed = false;
-
-            sections.forEach(section => {
-                const id = section.getAttribute('data-section');
-                if (!scrolledSections[id]) {
-                    const rect = section.getBoundingClientRect();
-                    if (rect.top < window.innerHeight * 0.85) {
-                        updated[id] = true;
-                        changed = true;
-                    }
-                }
-            });
-
-            if (changed) {
-                setScrolledSections(updated);
-            }
-        }, 50);
-
-        window.addEventListener('scroll', handleScroll);
-        // Initial check
-        setTimeout(handleScroll, 300);
-
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [scrolledSections]);
+    const [activeService, setActiveService] = React.useState(null);
 
     // Simplified color palette
     const colors = {
@@ -69,68 +23,16 @@ function AboutUsPage() {
         { icon: <Users size={24} />, name: "Consulting" },
     ];
 
-    // Essential optimized animations only
-    const animationStyles = `
-        .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .fade-in-left {
-            opacity: 0;
-            transform: translateX(-30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        .fade-in-left.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        .fade-in-right {
-            opacity: 0;
-            transform: translateX(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        .fade-in-right.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        .scale-in {
-            opacity: 0;
-            transform: scale(0.9);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        .scale-in.visible {
-            opacity: 1;
-            transform: scale(1);
-        }
-        @keyframes gentle-pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.03); }
-            100% { transform: scale(1); }
-        }
-        .section-container {
-            overflow: hidden;
-        }
-    `;
-
     return (
         <div style={{ fontFamily: 'Arial, sans-serif', padding: '0', margin: '0', color: colors.textDark, overflowX: 'hidden' }}>
-            <style>{animationStyles}</style>
-
             {/* Hero Section */}
-            <div className="section-container" style={{
+            <div style={{
                 position: 'relative',
                 textAlign: 'center',
                 padding: '80px 20px',
                 backgroundColor: colors.lightRed
             }}>
-                <div className={`fade-in ${animate ? 'visible' : ''}`} style={{
-                    transitionDelay: '0.2s'
-                }}>
+                <div>
                     <h1 style={{
                         fontSize: '46px',
                         marginBottom: '10px',
@@ -139,18 +41,15 @@ function AboutUsPage() {
                         ABOUT US
                     </h1>
                     <div style={{
-                        width: '60px',
                         height: '4px',
                         backgroundColor: colors.primary,
                         margin: '10px auto 20px',
-                        transition: 'width 0.8s ease-out',
-                        width: animate ? '60px' : '0px'
+                        width: '60px'
                     }}></div>
                     <h2 style={{
                         fontSize: '28px',
-                        color: colors.textDark,
-                        transitionDelay: '0.4s'
-                    }} className={`fade-in ${animate ? 'visible' : ''}`}>
+                        color: colors.textDark
+                    }}>
                         JD TECH SOLUTION
                     </h2>
                     <p style={{
@@ -158,16 +57,15 @@ function AboutUsPage() {
                         fontSize: '18px',
                         color: colors.textLight,
                         maxWidth: '700px',
-                        margin: '20px auto',
-                        transitionDelay: '0.6s'
-                    }} className={`fade-in ${animate ? 'visible' : ''}`}>
+                        margin: '20px auto'
+                    }}>
                         We're here to provide you with a whole range of solutions to make your life easier.
                     </p>
                 </div>
             </div>
 
             {/* Mission & Vision Section */}
-            <div className="section-container" style={{
+            <div style={{
                 display: 'flex',
                 justifyContent: 'center',
                 gap: '30px',
@@ -175,21 +73,16 @@ function AboutUsPage() {
                 backgroundColor: colors.white,
                 flexWrap: 'wrap'
             }}>
-                <div
-                    className={`fade-in-left scroll-animate ${scrolledSections['mission'] ? 'visible' : ''}`}
-                    data-section="mission"
-                    style={{
-                        flex: '1',
-                        minWidth: '300px',
-                        maxWidth: '400px',
-                        padding: '25px',
-                        backgroundColor: colors.white,
-                        borderRadius: '10px',
-                        boxShadow: '0 5px 15px rgba(0,0,0,0.05)',
-                        transition: 'all 0.3s ease',
-                        border: `1px solid ${colors.lightRed}`
-                    }}
-                >
+                <div style={{
+                    flex: '1',
+                    minWidth: '300px',
+                    maxWidth: '400px',
+                    padding: '25px',
+                    backgroundColor: colors.white,
+                    borderRadius: '10px',
+                    boxShadow: '0 5px 15px rgba(0,0,0,0.05)',
+                    border: `1px solid ${colors.lightRed}`
+                }}>
                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
                         <div style={{
                             backgroundColor: `${colors.primary}15`,
@@ -210,21 +103,16 @@ function AboutUsPage() {
                     </p>
                 </div>
 
-                <div
-                    className={`fade-in-right scroll-animate ${scrolledSections['vision'] ? 'visible' : ''}`}
-                    data-section="vision"
-                    style={{
-                        flex: '1',
-                        minWidth: '300px',
-                        maxWidth: '400px',
-                        padding: '25px',
-                        backgroundColor: colors.white,
-                        borderRadius: '10px',
-                        boxShadow: '0 5px 15px rgba(0,0,0,0.05)',
-                        transition: 'all 0.3s ease',
-                        border: `1px solid ${colors.lightRed}`
-                    }}
-                >
+                <div style={{
+                    flex: '1',
+                    minWidth: '300px',
+                    maxWidth: '400px',
+                    padding: '25px',
+                    backgroundColor: colors.white,
+                    borderRadius: '10px',
+                    boxShadow: '0 5px 15px rgba(0,0,0,0.05)',
+                    border: `1px solid ${colors.lightRed}`
+                }}>
                     <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
                         <div style={{
                             backgroundColor: `${colors.primary}15`,
@@ -247,20 +135,16 @@ function AboutUsPage() {
             </div>
 
             {/* Company History */}
-            <div className="section-container" style={{
+            <div style={{
                 padding: '60px 20px',
                 backgroundColor: colors.lightRed,
                 textAlign: 'center',
-                position: 'relative',
+                position: 'relative'
             }}>
-                <div
-                    className={`scale-in scroll-animate ${scrolledSections['journey'] ? 'visible' : ''}`}
-                    data-section="journey"
-                    style={{
-                        position: 'relative',
-                        zIndex: 1
-                    }}
-                >
+                <div style={{
+                    position: 'relative',
+                    zIndex: 1
+                }}>
                     <h2 style={{
                         fontSize: '32px',
                         color: colors.primary,
@@ -310,16 +194,13 @@ function AboutUsPage() {
                 </div>
             </div>
 
-            {/* Services Section - Optimized */}
-            <div className="section-container" style={{
+            {/* Services Section */}
+            <div style={{
                 padding: '60px 20px',
                 textAlign: 'center',
                 backgroundColor: colors.white
             }}>
-                <div
-                    className={`scale-in scroll-animate ${scrolledSections['solutions-title'] ? 'visible' : ''}`}
-                    data-section="solutions-title"
-                >
+                <div>
                     <h2 style={{
                         fontSize: '32px',
                         color: colors.primary,
@@ -351,8 +232,6 @@ function AboutUsPage() {
                     {services.map((service, index) => (
                         <div
                             key={index}
-                            className={`fade-in scroll-animate ${scrolledSections[`service-${index}`] ? 'visible' : ''}`}
-                            data-section={`service-${index}`}
                             style={{
                                 width: '250px',
                                 height: '200px',
@@ -367,8 +246,7 @@ function AboutUsPage() {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 cursor: 'pointer',
-                                position: 'relative',
-                                transitionDelay: `${0.1 * index}s`
+                                position: 'relative'
                             }}
                             onMouseEnter={() => setActiveService(index)}
                             onMouseLeave={() => setActiveService(null)}
@@ -407,26 +285,22 @@ function AboutUsPage() {
                 </div>
             </div>
 
-            {/* 24/7 Support Banner - Simplified */}
-            <div className="section-container" style={{
+            {/* 24/7 Support Banner */}
+            <div style={{
                 backgroundColor: colors.primary,
                 color: colors.white,
                 padding: '40px 20px'
             }}>
-                <div
-                    className={`fade-in scroll-animate ${scrolledSections['support'] ? 'visible' : ''}`}
-                    data-section="support"
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        maxWidth: '1000px',
-                        margin: '0 auto',
-                        flexWrap: 'wrap',
-                        position: 'relative',
-                        zIndex: 1
-                    }}
-                >
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    maxWidth: '1000px',
+                    margin: '0 auto',
+                    flexWrap: 'wrap',
+                    position: 'relative',
+                    zIndex: 1
+                }}>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <div style={{
                             backgroundColor: 'rgba(255,255,255,0.2)',
@@ -465,20 +339,16 @@ function AboutUsPage() {
                 </div>
             </div>
 
-            {/* Call to Action - Optimized */}
-            <div className="section-container" style={{
+            {/* Call to Action */}
+            <div style={{
                 backgroundColor: colors.lightGray,
                 padding: '80px 20px',
                 textAlign: 'center'
             }}>
-                <div
-                    className={`scale-in scroll-animate ${scrolledSections['cta'] ? 'visible' : ''}`}
-                    data-section="cta"
-                    style={{
-                        maxWidth: '800px',
-                        margin: '0 auto'
-                    }}
-                >
+                <div style={{
+                    maxWidth: '800px',
+                    margin: '0 auto'
+                }}>
                     <h2 style={{
                         fontSize: '36px',
                         color: colors.primary,
