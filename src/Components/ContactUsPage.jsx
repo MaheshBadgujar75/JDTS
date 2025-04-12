@@ -76,7 +76,7 @@ const ContactUs = () => {
                     <div className="contact-info">
                         <div>
                             <h4 className="contact-info-title">Address</h4>
-                            <p>123 Main Street, City, Country</p>
+                            <p>Karanjade, India</p>
                         </div>
                         <div>
                             <h4 className="contact-info-title">Phone</h4>
@@ -84,7 +84,7 @@ const ContactUs = () => {
                         </div>
                         <div>
                             <h4 className="contact-info-title">Email</h4>
-                            <p>contact@yourcompany.com</p>
+                            <p>contact@example.com</p>
                         </div>
                     </div>
                 </div>
